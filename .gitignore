@@ -1,0 +1,9 @@
+# 原始資料（不上傳）
+*.xlsx
+*.pdf
+generate_site.py
+vocab_data.json
+
+# 系統檔
+.DS_Store
+Thumbs.db
