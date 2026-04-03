@@ -277,6 +277,87 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 @keyframes bounceIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
 
 .hidden{display:none!important;}
+
+/* ============================================================
+   MOBILE RESPONSIVE  (≤ 600px)
+   ============================================================ */
+@media (max-width:600px){
+
+  /* Hero */
+  .hero{padding:14px 16px 18px;}
+  .hero h1{font-size:20px;}
+  .hero p{font-size:12px;margin-bottom:14px;}
+  .hero-stats{gap:16px;}
+  .hero-stat-num{font-size:22px;}
+  .hero-badge{font-size:10px;padding:3px 11px;}
+
+  /* Group tabs */
+  .group-tabs{padding:0 8px;}
+  .gtab{padding:11px 13px;font-size:13px;}
+
+  /* Container */
+  .container{padding:16px 12px 80px;}
+
+  /* Progress */
+  .progress-section{padding:14px 14px;}
+
+  /* Days grid — single column */
+  .days-grid{grid-template-columns:1fr;gap:10px;}
+
+  /* Day card buttons — 2×2 */
+  .day-card-btns{grid-template-columns:1fr 1fr;}
+
+  /* Group section header */
+  .group-section-header{margin:20px 0 10px;}
+  .group-section-title{font-size:14px;}
+
+  /* Modal header — wrap on small screens */
+  .modal-header{padding:10px 12px;gap:8px;flex-wrap:wrap;}
+  .modal-title{font-size:13px;}
+  .modal-word-count{font-size:10px;}
+  /* Hide prev/next nav buttons; user can use swipe or day card */
+  .modal-nav-btn{display:none;}
+  .modal-close{padding:5px 10px;font-size:12px;}
+  .modal-day-badge{font-size:12px;padding:3px 9px;}
+
+  /* Modal tabs */
+  .modal-tabs{padding:0 8px;top:55px;}
+  .mtab{padding:10px 12px;font-size:12px;}
+
+  /* Modal body */
+  .modal-body{padding:16px 12px 80px;}
+
+  /* Word table — hide example column on very small screens */
+  .word-table th:nth-child(4),
+  .word-table td:nth-child(4){display:none;}
+  .wt-en{font-size:13px;}
+  .word-table td{padding:8px 8px;}
+
+  /* Flashcard */
+  .fc-section{max-width:100%;}
+  .fc-word{font-size:clamp(22px,8vw,36px);}
+  .fc-zh{font-size:clamp(14px,5vw,22px);}
+  .fc-ex{font-size:15px;}
+  .fc-exz{font-size:13px;}
+  .fc-face{padding:20px 16px;}
+
+  /* Typing — smaller letter boxes */
+  .typing-section{max-width:100%;}
+  .letter-boxes{gap:4px;}
+  .letter-box{width:30px;height:38px;font-size:16px;border-radius:6px;}
+  .typing-card{padding:18px 14px;}
+
+  /* MCQ — stack options to 1 column */
+  .mcq-section{max-width:100%;}
+  .mcq-opts{grid-template-columns:1fr;}
+  .mcq-q{font-size:16px;}
+  .mcq-opt{font-size:15px;padding:10px 12px;}
+
+  /* History */
+  .hist-card{padding:14px 12px;}
+  .hist-stats{flex-wrap:wrap;}
+  .hist-stat{min-width:50%;}
+}
 </style>
 </head>
 <body>
