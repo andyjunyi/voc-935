@@ -1032,6 +1032,17 @@ function renderTypCard() {
 function _initLetterBoxes(letters) {
   const boxes = document.querySelectorAll('.letter-box');
   boxes.forEach((box, i) => {
+    let _composing = false;
+    box.addEventListener('compositionstart', () => { _composing = true; });
+    box.addEventListener('compositionend', () => {
+      _composing = false;
+      if (typAnswered) return;
+      const val = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
+      box.value = val;
+      if (val && i < boxes.length - 1) boxes[i+1].focus();
+      const all = [...boxes].every(b => b.value.length === 1);
+      if (all) submitTyping();
+    });
     box.addEventListener('keydown', e => {
       if (e.key === 'ArrowUp') {
         e.preventDefault();
@@ -1067,6 +1078,7 @@ function _initLetterBoxes(letters) {
     });
     box.addEventListener('input', e => {
       if (typAnswered) return;
+      if (_composing) return;
       // Keep only last char, lowercase
       const val = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
       box.value = val;
