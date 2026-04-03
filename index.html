@@ -234,6 +234,29 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .mcq-next-btn:hover{background:var(--primary-hover);}
 .mcq-next-btn.visible{display:block;}
 
+/* ── SENTENCE PRACTICE (Tab 5) ── */
+.sent-section{max-width:720px;margin:0 auto;}
+.sent-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:24px;margin-bottom:12px;}
+.sent-zh{font-size:17px;font-weight:700;color:var(--text);text-align:center;line-height:2;margin-bottom:28px;padding-bottom:16px;border-bottom:1.5px dashed var(--border);}
+.sent-words-row{display:flex;flex-wrap:wrap;gap:18px 32px;justify-content:center;align-items:flex-end;padding:4px 0 12px;}
+.sent-token{display:flex;flex-direction:column;align-items:center;gap:0;}
+.sent-token-boxes{display:flex;gap:4px;}
+.sent-token-hint{font-size:11px;font-weight:700;color:var(--muted);text-align:center;min-height:16px;white-space:nowrap;margin-top:5px;}
+.sent-token-punct{font-size:22px;font-weight:700;color:var(--muted);padding-bottom:16px;line-height:1;}
+.sent-token.word-done .sent-token-hint{color:var(--green);}
+.sent-token.word-active .sent-lb:not(.correct):not(.revealed){border-color:var(--primary);}
+
+/* Sentence boxes — box style */
+.sent-lb{text-transform:none!important;width:32px;height:40px;font-size:18px;}
+.sent-feedback{min-height:28px;font-size:13px;font-weight:700;text-align:center;margin:12px 0 4px;padding:6px 14px;border-radius:8px;display:inline-block;}
+.sent-feedback.ok{color:var(--green);background:#f0fdfc;}
+.sent-feedback.err{color:var(--red);background:#fef2f2;}
+.sent-feedback.info{color:var(--muted);}
+.sent-feedback-wrap{text-align:center;}
+.sent-done-panel{text-align:center;padding:16px 0 4px;}
+.sent-done-msg{font-size:17px;font-weight:900;margin-bottom:4px;color:var(--green);}
+.sent-done-sub{font-size:13px;color:var(--muted);}
+
 /* HISTORY SECTION */
 .hist-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:24px;}
 .hist-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -357,6 +380,12 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
   .hist-card{padding:14px 12px;}
   .hist-stats{flex-wrap:wrap;}
   .hist-stat{min-width:50%;}
+
+  /* Sentence practice */
+  .sent-card{padding:16px 12px;}
+  .sent-zh{font-size:15px;}
+  .sent-words-row{gap:8px 16px;}
+  .sent-token-hint{font-size:10px;}
 }
 </style>
 </head>
@@ -432,6 +461,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
       <button class="mtab" onclick="switchTab('flash')">🃏 閃卡</button>
       <button class="mtab" onclick="switchTab('type')">✍️ 中翻英</button>
       <button class="mtab" onclick="switchTab('mcq')">🎯 選擇題</button>
+      <button class="mtab" onclick="switchTab('sent')">📝 句子翻譯</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -504,6 +534,15 @@ let mcqWords = [];
 let mcqIdx = 0;
 let mcqScore = 0;
 let mcqAnswered = false;
+
+// Sentence practice state
+let sentWords = [];
+let sentIdx   = 0;
+let sentScore = 0;
+let sentDone  = false;
+let _sentTokens = [];
+let _sentFocus  = 0;
+let _vocabMap   = null;
 
 // ============================================================
 // LOCAL STORAGE HELPERS
@@ -663,7 +702,7 @@ function switchTab(tab) {
   currentTab = tab;
   if (tab !== 'list') _sessionStart = Date.now();
   document.querySelectorAll('.mtab').forEach((t, i) => {
-    t.classList.toggle('active', ['list','flash','type','mcq'][i] === tab);
+    t.classList.toggle('active', ['list','flash','type','mcq','sent'][i] === tab);
   });
   renderModalContent();
 }
@@ -675,6 +714,7 @@ function renderModalContent() {
   else if (currentTab === 'flash') renderFlashcard(body);
   else if (currentTab === 'type') renderTyping(body);
   else if (currentTab === 'mcq') renderMCQ(body);
+  else if (currentTab === 'sent') renderSentence(body);
 }
 
 // ============================================================
@@ -1121,8 +1161,6 @@ function _initLetterBoxes(letters) {
       const val = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
       box.value = val;
       if (val && i < boxes.length - 1) boxes[i+1].focus();
-      const all = [...boxes].every(b => b.value.length === 1);
-      if (all) submitTyping();
     });
     box.addEventListener('keydown', e => {
       if (e.key === 'ArrowUp') {
@@ -1130,14 +1168,14 @@ function _initLetterBoxes(letters) {
         if (typWords[typIdx]) speakWord(typWords[typIdx].w);
         return;
       }
-      if (e.key === 'ArrowDown' || (e.key === ' ' && !typAnswered)) {
+      if (e.key === 'ArrowDown') {
         e.preventDefault();
         submitTyping();
         return;
       }
       if (typAnswered) {
         if (e.key === 'ArrowLeft') { e.preventDefault(); prevTyping(); }
-        else if (e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); nextTyping(); }
+        else if (e.key === 'ArrowRight' || e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextTyping(); }
         return;
       }
       if (e.key === 'Backspace') {
@@ -1164,9 +1202,6 @@ function _initLetterBoxes(letters) {
       const val = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
       box.value = val;
       if (val && i < boxes.length - 1) boxes[i+1].focus();
-      // Auto-submit when all filled
-      const all = [...boxes].every(b => b.value.length === 1);
-      if (all) submitTyping();
     });
     // Handle paste on first box
     if (i === 0) {
@@ -1174,7 +1209,8 @@ function _initLetterBoxes(letters) {
         e.preventDefault();
         const text = (e.clipboardData || window.clipboardData).getData('text').toLowerCase().replace(/[^a-z]/g,'');
         boxes.forEach((b, j) => { b.value = text[j] || ''; });
-        submitTyping();
+        const lastIdx = Math.min(text.length, boxes.length) - 1;
+        if (lastIdx >= 0) boxes[lastIdx].focus();
       });
     }
   });
@@ -1407,6 +1443,279 @@ function retryMCQ() {
 }
 
 // ============================================================
+// SENTENCE PRACTICE
+// ============================================================
+function _getVocabMap() {
+  if (!_vocabMap) {
+    _vocabMap = new Map();
+    VOCAB.forEach(v => _vocabMap.set(v.w.toLowerCase(), v));
+  }
+  return _vocabMap;
+}
+
+const _COMMON_ZH = {
+  'a':'一個','an':'一個','the':'這/那','is':'是','are':'是(複)',
+  'was':'是(過去)','were':'是(過去複)','be':'是','been':'是(完成)',
+  'to':'到/為了','in':'在...中','on':'在...上','at':'在',
+  'for':'為了','of':'的','and':'和','or':'或','but':'但是',
+  'from':'從','by':'被/由','it':'它','its':'它的','that':'那個',
+  'this':'這','these':'這些','those':'那些',
+  'my':'我的','your':'你的','his':'他的','her':'她的',
+  'our':'我們的','their':'他們的',
+  'i':'我','you':'你','he':'他','she':'她','we':'我們','they':'他們',
+  'me':'我(賓)','him':'他(賓)','us':'我們(賓)','them':'他們(賓)',
+  'not':'不','do':'做','does':'做(三單)','did':'做(過去)',
+  'have':'有','has':'有(三單)','had':'有(過去)',
+  'will':'將','would':'會','can':'能','could':'能(過去)',
+  'should':'應該','may':'可能','must':'必須',
+  'very':'非常','so':'所以','as':'如/當','if':'如果','when':'當',
+  'up':'向上','out':'外面','about':'關於','into':'進入',
+  'after':'之後','before':'之前','some':'一些','any':'任何','all':'所有',
+  'no':'沒有','than':'比','more':'更多','most':'最多','just':'只是',
+  'what':'什麼','who':'誰','where':'哪裡','how':'如何',
+  'why':'為什麼','which':'哪個',
+  'already':'已經','still':'仍然','also':'也','here':'這裡','there':'那裡',
+  'then':'然後','too':'也','only':'只','because':'因為','while':'當...時',
+  'since':'自從','until':'直到','each':'每個','every':'每個',
+  'between':'之間','through':'穿過','without':'沒有','around':'周圍',
+  'during':'在...期間','against':'對抗','within':'在...內',
+  'am':'是(我)','dont':"不",'doesnt':'不(三單)','didnt':'沒有',
+  'wont':'不會','cant':'不能','isnt':'不是','arent':'不是',
+  'wasnt':'不是(過去)','havent':'沒有(完成)','hasnt':'沒有(完成)',
+};
+
+function _getWordZh(wordStr) {
+  const lower = wordStr.toLowerCase().replace(/[^a-z']/g,'');
+  const map = _getVocabMap();
+  if (map.has(lower)) return extractMeaning(map.get(lower).zh);
+  if (_COMMON_ZH[lower]) return _COMMON_ZH[lower];
+  const plain = lower.replace(/'/g,'');
+  if (map.has(plain)) return extractMeaning(map.get(plain).zh);
+  if (_COMMON_ZH[plain]) return _COMMON_ZH[plain];
+  return '';
+}
+
+// Parse sentence into tokens: [{word, target, punct, zh, correct, hintCount}]
+function _parseSentence(ex) {
+  const tokens = [];
+  const re = /([A-Za-z][A-Za-z']*)([^A-Za-z']*)/g;
+  let m;
+  while ((m = re.exec(ex)) !== null) {
+    const word   = m[1];
+    const after  = m[2];
+    const punct  = after.trim().replace(/\s/g,'');
+    const target = word.toLowerCase().replace(/[^a-z]/g,'');
+    if (!target) continue;
+    tokens.push({ word, target, punct: punct||'', zh: _getWordZh(word), correct: false, hintCount: 0 });
+  }
+  return tokens;
+}
+
+function renderSentence(body) {
+  sentWords = modalWords.filter(w => w.ex && w.exz);
+  sentIdx   = 0;
+  sentScore = 0;
+  sentDone  = false;
+  if (!sentWords.length) {
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);font-weight:700">此天沒有例句資料</div>`;
+    return;
+  }
+  _renderSentCard(body);
+}
+
+function _renderSentCard(body) {
+  if (sentIdx >= sentWords.length) { _renderSentResult(body); return; }
+  const w = sentWords[sentIdx];
+  _sentTokens = _parseSentence(w.ex);
+  _sentFocus  = 0;
+  sentDone    = false;
+
+  let tokensHTML = '';
+  _sentTokens.forEach((t, ti) => {
+    const boxesHTML = t.target.split('').map((ch, bi) =>
+      `<input class="letter-box sent-lb" id="slb-${ti}-${bi}" maxlength="1"
+        autocomplete="off" autocorrect="off" autocapitalize="none"
+        spellcheck="false" inputmode="text"
+        data-ti="${ti}" data-bi="${bi}">`
+    ).join('');
+    const hintHTML = `<div class="sent-token-hint" id="shint-${ti}">${t.zh || ''}</div>`;
+    const punctHTML = t.punct ? `<span class="sent-token-punct">${t.punct}</span>` : '';
+    tokensHTML += `<div class="sent-token" id="stok-${ti}"><div class="sent-token-boxes">${boxesHTML}</div>${hintHTML}</div>${punctHTML}`;
+  });
+
+  body.innerHTML = `
+    <div class="sent-section">
+      <div class="practice-header">
+        <h3>句子翻譯</h3>
+        <span class="practice-score">${sentIdx + 1} / ${sentWords.length}</span>
+      </div>
+      <div class="sent-card">
+        <div class="sent-zh">${w.exz}</div>
+        <div class="sent-words-row" id="sent-words-row">${tokensHTML}</div>
+        <div class="sent-feedback-wrap"><span class="sent-feedback info" id="sent-feedback">輸入每個單字，按 Enter 確認</span></div>
+      </div>
+      <div class="typing-nav">
+        <button class="t-btn t-btn-skip" onclick="nextSentence()">跳過 →</button>
+      </div>
+    </div>`;
+
+  _initSentBoxes();
+  _focusSentToken(0);
+}
+
+function _initSentBoxes() {
+  document.querySelectorAll('.sent-lb').forEach(box => {
+    const ti = +box.dataset.ti;
+    const bi = +box.dataset.bi;
+
+    box.addEventListener('keydown', e => {
+      const t = _sentTokens[ti];
+      if (sentDone) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); nextSentence(); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSentence(); }
+        return;
+      }
+      if (e.key === 'Enter') { e.preventDefault(); _checkAllSentTokens(); return; }
+      if (t.correct) {
+        if (e.key === 'ArrowRight' || e.key === 'Tab') { e.preventDefault(); _focusSentToken(_sentFocus + 1); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); _focusSentToken(_sentFocus - 1); }
+        else if (e.key === ' ') { e.preventDefault(); _focusSentToken(_sentFocus + 1); }
+        return;
+      }
+      if (e.key === ' ')     { e.preventDefault(); _focusSentToken(_sentFocus + 1); return; }
+      if (e.key === 'Tab')   { e.preventDefault(); _focusSentToken(e.shiftKey ? _sentFocus - 1 : _sentFocus + 1); return; }
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (box.value) { box.value = ''; }
+        else if (bi > t.hintCount) { const p = document.getElementById(`slb-${ti}-${bi-1}`); if (p) { p.value=''; p.focus(); } }
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (bi > t.hintCount) document.getElementById(`slb-${ti}-${bi-1}`)?.focus();
+        else _focusSentToken(_sentFocus - 1);
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+        else _focusSentToken(_sentFocus + 1);
+        return;
+      }
+    });
+
+    let _comp = false;
+    box.addEventListener('compositionstart', () => { _comp = true; });
+    box.addEventListener('compositionend', () => {
+      _comp = false;
+      const t = _sentTokens[ti];
+      if (t.correct) return;
+      let val = box.value.replace(/[^a-zA-Z]/g,'').slice(-1).toLowerCase();
+      if (ti === 0 && bi === 0 && val) val = val.toUpperCase();
+      box.value = val;
+      if (val && bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+    });
+    box.addEventListener('input', () => {
+      if (_comp) return;
+      const t = _sentTokens[ti];
+      if (t.correct) return;
+      let val = box.value.replace(/[^a-zA-Z]/g,'').slice(-1).toLowerCase();
+      if (ti === 0 && bi === 0 && val) val = val.toUpperCase();
+      box.value = val;
+      if (val && bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+    });
+  });
+}
+
+function _focusSentToken(idx) {
+  const n = _sentTokens.length;
+  idx = Math.max(0, Math.min(n - 1, idx));
+  _sentFocus = idx;
+  document.querySelectorAll('.sent-token').forEach((el, i) => el.classList.toggle('word-active', i === idx));
+  const t = _sentTokens[idx];
+  document.getElementById(`slb-${idx}-${t.hintCount}`)?.focus();
+}
+
+function _checkAllSentTokens() {
+  const fb = document.getElementById('sent-feedback');
+  let wrongCount = 0;
+  let firstWrong = -1;
+
+  _sentTokens.forEach((t, ti) => {
+    if (t.correct) return; // already confirmed correct, skip
+    const boxes = [...document.querySelectorAll(`.sent-lb[data-ti="${ti}"]`)];
+    const answer = boxes.map(b => b.value).join('').toLowerCase();
+
+    if (answer === t.target) {
+      t.correct = true;
+      boxes.forEach(b => { b.classList.remove('revealed'); b.classList.add('correct'); b.disabled = true; });
+      document.getElementById(`stok-${ti}`)?.classList.add('word-done');
+    } else {
+      wrongCount++;
+      if (firstWrong === -1) firstWrong = ti;
+      // Only reveal hint if student actually typed something for this word
+      if (answer.length > 0) {
+        t.hintCount = Math.min(t.hintCount + 1, t.target.length - 1);
+        for (let i = 0; i < t.hintCount; i++) {
+          boxes[i].value = (ti === 0 && i === 0) ? t.target[i].toUpperCase() : t.target[i];
+          boxes[i].classList.add('revealed');
+          boxes[i].disabled = true;
+        }
+        for (let i = t.hintCount; i < boxes.length; i++) {
+          boxes[i].value = '';
+          boxes[i].classList.remove('correct','wrong','revealed');
+          boxes[i].disabled = false;
+        }
+      }
+    }
+  });
+
+  if (wrongCount === 0) {
+    sentDone = true;
+    sentScore++;
+    fb.className = 'sent-feedback ok';
+    fb.textContent = '✓ 整句完成！按 Enter / 空白鍵 進入下一句';
+    const panel = document.createElement('div');
+    panel.className = 'sent-done-panel';
+    panel.innerHTML = `<div class="sent-done-msg">🎉 完成！</div><div class="sent-done-sub">第 ${sentIdx + 1} / ${sentWords.length} 句</div>`;
+    document.getElementById('sent-words-row')?.after(panel);
+  } else {
+    fb.className = 'sent-feedback err';
+    fb.textContent = `✗ 還有 ${wrongCount} 個單字未完成或有誤`;
+    _focusSentToken(firstWrong);
+  }
+}
+
+function nextSentence() {
+  sentIdx++;
+  const body = document.getElementById('modal-body');
+  if (body) _renderSentCard(body);
+}
+
+function prevSentence() {
+  if (sentIdx > 0) { sentIdx--; const body = document.getElementById('modal-body'); if (body) _renderSentCard(body); }
+}
+
+function retrySentence() {
+  sentIdx = 0; sentScore = 0;
+  const body = document.getElementById('modal-body');
+  if (body) _renderSentCard(body);
+}
+
+function _renderSentResult(body) {
+  body.innerHTML = `
+    <div class="sent-section">
+      <div class="fc-result">
+        <div class="fc-result-emoji">🏆</div>
+        <div class="fc-result-title">句子翻譯完成！</div>
+        <div class="fc-result-sub">完成 ${sentWords.length} 個句子</div>
+        <button class="result-btn" onclick="retrySentence()">重新練習</button>
+        <button class="result-btn secondary" onclick="switchTab('type')">去做中翻英</button>
+      </div>
+    </div>`;
+}
+
+// ============================================================
 // PROGRESS
 // ============================================================
 function markDayDone() {
@@ -1584,10 +1893,21 @@ document.addEventListener('keydown', function(e) {
     if (inBox) return; // letter box 自己處理
     switch (e.key) {
       case 'ArrowUp':    e.preventDefault(); if (typWords[typIdx]) speakWord(typWords[typIdx].w); break;
-      case 'ArrowDown':
-      case ' ':          e.preventDefault(); submitTyping(); break;
+      case 'ArrowDown':  e.preventDefault(); submitTyping(); break;
+      case ' ':          e.preventDefault(); if (typAnswered) nextTyping(); break;
       case 'ArrowLeft':  e.preventDefault(); prevTyping();   break;
       case 'ArrowRight': e.preventDefault(); typAnswered ? nextTyping() : submitTyping(); break;
+    }
+    return;
+  }
+
+  // ── 句子翻譯 ──
+  if (currentTab === 'sent') {
+    const inBox = e.target.classList.contains('sent-lb');
+    if (inBox) return; // boxes handle their own keys
+    if (sentDone) {
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); nextSentence(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSentence(); }
     }
     return;
   }
