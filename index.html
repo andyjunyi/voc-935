@@ -127,8 +127,8 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .wt-ph{font-family:'Noto Sans','Noto Sans TC',sans-serif;font-size:11px;color:var(--muted);margin-top:2px;}
 .wt-zh{font-weight:700;}
 .wt-pos{display:inline-block;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;margin-right:4px;background:#e0f2fe;color:var(--primary);font-family:'DM Mono',monospace;}
-.wt-ex{font-size:11px;color:#475569;line-height:1.6;}
-.wt-exz{font-size:11px;color:var(--muted);margin-top:2px;}
+.wt-ex{font-size:13px;color:#475569;line-height:1.6;}
+.wt-exz{font-size:13px;color:var(--muted);margin-top:2px;}
 .know-btn{width:28px;height:28px;border-radius:8px;border:1.5px solid var(--border);background:white;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
 .know-btn:hover{border-color:var(--green);background:#f0fdfc;}
 .know-btn.known{background:var(--green);border-color:var(--green);color:white;}
@@ -833,7 +833,7 @@ function printWordList() {
       <td><strong>${w.w}</strong></td>
       <td style="font-family:'Noto Sans',sans-serif;font-size:11px">${w.ph ? '/' + w.ph + '/' : ''}</td>
       <td>${w.zh}</td>
-      <td style="font-size:11px">${w.ex || ''}</td>
+      <td style="font-size:13px">${w.ex || ''}</td>
     </tr>`;
   });
   html += '</tbody></table>';
