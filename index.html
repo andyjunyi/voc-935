@@ -1281,8 +1281,12 @@ function _renderSentResult(body) {
 // ── AUDIO ENGINE ─────────────────────────────────────────────
 let _ttsAudio = null;
 
+const _isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
 function speakWord(word) {
   if (!word) return;
+  // 手機直接用 Web Speech API（Google TTS onerror 為非同步，iOS 會封鎖）
+  if (_isMobile) { _wsSpeakWord(word); return; }
   if (_ttsAudio) { _ttsAudio.onended = null; _ttsAudio.onerror = null; _ttsAudio.pause(); }
   const audio = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=' + encodeURIComponent(word));
   _ttsAudio = audio;
@@ -1301,6 +1305,7 @@ function flipFC() {
   if (!card) return;
   fcFlipped = !fcFlipped;
   card.classList.toggle('flipped', fcFlipped);
+  if (!fcFlipped && fcWords[fcIdx]) speakWord(fcWords[fcIdx].w);
 }
 
 function fcNav(dir) {
