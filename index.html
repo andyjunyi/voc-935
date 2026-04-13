@@ -164,12 +164,15 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .fc-front{background:white;}
 .fc-back{background:linear-gradient(135deg,#f0f9ff,#e0f2fe);transform:rotateY(180deg);}
 .fc-hint{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.1em;}
+.fc-speak-btn{background:none;border:none;cursor:pointer;font-size:28px;line-height:1;padding:4px;border-radius:50%;transition:transform .1s,opacity .15s;opacity:.55;}
+.fc-speak-btn:hover{opacity:1;transform:scale(1.15);}
+.fc-speak-btn:active{transform:scale(.92);}
 .fc-word{font-size:clamp(26px,6vw,40px);font-weight:900;color:var(--primary);}
 .fc-ph{font-family:'DM Mono',monospace;font-size:15px;color:var(--muted);}
-.fc-pos-badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:5px;background:#e0f2fe;color:var(--primary);font-family:'DM Mono',monospace;}
+.fc-pos-badge{font-size:14px;font-weight:800;padding:2px 8px;border-radius:5px;background:#e0f2fe;color:var(--primary);font-family:'DM Mono',monospace;}
 .fc-zh{font-size:clamp(16px,4vw,26px);font-weight:900;color:var(--text);}
-.fc-ex{font-size:13px;color:#374151;line-height:1.7;max-width:340px;}
-.fc-exz{font-size:11px;color:var(--muted);}
+.fc-ex{font-size:17px;color:#374151;line-height:1.7;max-width:340px;}
+.fc-exz{font-size:15px;color:var(--muted);}
 
 .fc-nav{display:flex;align-items:center;justify-content:center;gap:10px;}
 .fc-nav-btn{padding:8px 22px;border-radius:9px;border:1.5px solid var(--border);background:white;font-family:'Nunito',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:all .2s;color:var(--muted);}
@@ -231,6 +234,35 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 .mcq-next-btn:hover{background:var(--primary-hover);}
 .mcq-next-btn.visible{display:block;}
 
+/* ── SENTENCE PRACTICE (Tab 5) ── */
+.sent-section{max-width:720px;margin:0 auto;}
+.sent-card{background:white;border:1.5px solid var(--border);border-radius:14px;padding:24px;margin-bottom:12px;}
+.sent-zh{font-size:17px;font-weight:700;color:var(--text);text-align:center;line-height:2;margin-bottom:28px;padding-bottom:16px;border-bottom:1.5px dashed var(--border);}
+.sent-words-row{text-align:center;padding:4px 0 12px;line-height:1;}
+.sent-token{display:inline-flex;flex-direction:column;align-items:center;vertical-align:bottom;margin:9px 16px;}
+.sent-token-boxes{display:flex;gap:4px;align-items:center;}
+.sent-apostrophe{font-size:18px;font-weight:700;color:var(--text);line-height:1;margin:0 1px;}
+.sent-token-hint{font-size:11px;font-weight:700;color:var(--muted);text-align:center;min-height:16px;white-space:nowrap;margin-top:5px;}
+.sent-token-punct{display:inline-block;font-size:22px;font-weight:700;color:var(--muted);vertical-align:bottom;padding-bottom:16px;line-height:1;margin:9px 4px 9px -12px;}
+.sent-token.word-done .sent-token-hint{color:var(--green);}
+.sent-token.word-active .sent-lb:not(.correct):not(.revealed){border-color:var(--primary);}
+.letter-boxes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.letter-box{width:38px;height:46px;border:2px solid var(--border);border-radius:8px;font-size:20px;font-weight:900;text-align:center;font-family:'DM Mono',monospace;background:white;outline:none;transition:border-color .15s,background .15s;color:var(--text);text-transform:lowercase;padding:0;cursor:text;}
+.letter-box:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,108,147,.12);}
+.letter-box.filled{border-color:#94a3b8;}
+.letter-box.correct{border-color:var(--green)!important;background:#f0fdfc;color:var(--green);}
+.letter-box.wrong{border-color:var(--red)!important;background:#fef2f2;color:var(--red);}
+.letter-box.revealed{border-color:#f59e0b!important;background:#fffbeb;color:#d97706;}
+.sent-lb{text-transform:none!important;width:32px;height:40px;font-size:18px;}
+.sent-feedback{min-height:28px;font-size:13px;font-weight:700;text-align:center;margin:12px 0 4px;padding:6px 14px;border-radius:8px;display:inline-block;}
+.sent-feedback.ok{color:var(--green);background:#f0fdfc;}
+.sent-feedback.err{color:var(--red);background:#fef2f2;}
+.sent-feedback.info{color:var(--muted);}
+.sent-feedback-wrap{text-align:center;}
+.sent-done-panel{text-align:center;padding:16px 0 4px;}
+.sent-done-msg{font-size:17px;font-weight:900;margin-bottom:4px;color:var(--green);}
+.sent-done-sub{font-size:13px;color:var(--muted);}
+
 /* PRINT STYLES */
 @media print{
   body * { visibility: hidden; }
@@ -248,6 +280,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
 /* ANIMATIONS */
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes bounceIn{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}
+.confetti-piece{position:fixed;pointer-events:none;z-index:9999;will-change:transform;}
 
 .hidden{display:none!important;}
 </style>
@@ -321,6 +354,7 @@ body{font-family:'Nunito','Noto Sans TC',sans-serif;background:var(--bg);color:v
       <button class="mtab" onclick="switchTab('flash')">🃏 閃卡</button>
       <button class="mtab" onclick="switchTab('type')">✍️ 中翻英</button>
       <button class="mtab" onclick="switchTab('mcq')">🎯 選擇題</button>
+      <button class="mtab" onclick="switchTab('sent')">📝 句子翻譯</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
   </div>
@@ -392,6 +426,15 @@ let mcqWords = [];
 let mcqIdx = 0;
 let mcqScore = 0;
 let mcqAnswered = false;
+
+// Sentence practice state
+let sentWords = [];
+let sentIdx   = 0;
+let sentScore = 0;
+let sentDone  = false;
+let _sentTokens = [];
+let _sentFocus  = 0;
+let _vocabMap   = null;
 
 // ============================================================
 // LOCAL STORAGE HELPERS
@@ -549,7 +592,7 @@ function updateModalHeader() {
 function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.mtab').forEach((t, i) => {
-    t.classList.toggle('active', ['list','flash','type','mcq'][i] === tab);
+    t.classList.toggle('active', ['list','flash','type','mcq','sent'][i] === tab);
   });
   renderModalContent();
 }
@@ -561,6 +604,7 @@ function renderModalContent() {
   else if (currentTab === 'flash') renderFlashcard(body);
   else if (currentTab === 'type') renderTyping(body);
   else if (currentTab === 'mcq') renderMCQ(body);
+  else if (currentTab === 'sent') renderSentence(body);
 }
 
 // ============================================================
@@ -716,12 +760,15 @@ function renderFC() {
         <div class="fc-face fc-front">
           <span class="fc-hint">點擊翻牌</span>
           <div class="fc-word">${w.w}</div>
+          <button class="fc-speak-btn" onclick="event.stopPropagation();speakWord('${w.w}')" title="發音 (↑)">🔊</button>
           <div class="fc-ph">${w.ph || ''}</div>
-          ${pos ? `<span class="fc-pos-badge">${pos}</span>` : ''}
         </div>
         <div class="fc-face fc-back">
-          <div class="fc-zh">${meaning}</div>
-          <div class="fc-ex">${w.ex || ''}</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;">
+            ${pos ? `<span class="fc-pos-badge">${pos}</span>` : ''}
+            <span class="fc-zh">${meaning}</span>
+          </div>
+          <div class="fc-ex">${highlightKeyword(w.ex || '', w.w)}</div>
           <div class="fc-exz">${w.exz || ''}</div>
         </div>
       </div>
@@ -739,7 +786,514 @@ function renderFC() {
   if (fcFlipped) {
     const card = document.getElementById('fc-card');
     if (card) card.classList.add('flipped');
+  } else {
+    speakWord(w.w);
   }
+}
+
+function highlightKeyword(sentence, word) {
+  if (!sentence || !word) return sentence;
+  const w = word.toLowerCase();
+  const forms = new Set([w]);
+  forms.add(w + 's');
+  forms.add(w + 'es');
+  forms.add(w + 'ed');
+  forms.add(w + 'd');
+  forms.add(w + 'ing');
+  forms.add(w + 'er');
+  forms.add(w + 'est');
+  if (w.endsWith('y')) {
+    forms.add(w.slice(0, -1) + 'ies');
+    forms.add(w.slice(0, -1) + 'ied');
+  }
+  const escaped = [...forms].map(f => f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  escaped.sort((a, b) => b.length - a.length);
+  const regex = new RegExp('\\b(' + escaped.join('|') + ')\\b', 'i');
+  return sentence.replace(regex, '<u><strong>$1</strong></u>');
+}
+
+// ============================================================
+// SENTENCE PRACTICE
+// ============================================================
+function _getVocabMap() {
+  if (!_vocabMap) {
+    _vocabMap = new Map();
+    VOCAB.forEach(v => _vocabMap.set(v.w.toLowerCase(), v));
+  }
+  return _vocabMap;
+}
+
+const _COMMON_ZH = {
+  'a':'一個','an':'一個','the':'這/那','is':'是','are':'是(複)',
+  'was':'是(過去)','were':'是(過去複)','be':'是','been':'是(完成)',
+  'to':'到/為了','in':'在...中','on':'在...上','at':'在',
+  'for':'為了','of':'的','and':'和','or':'或','but':'但是',
+  'from':'從','by':'被/由','it':'它','its':'它的','that':'那個',
+  'this':'這','these':'這些','those':'那些',
+  'my':'我的','your':'你的','his':'他的','her':'她的',
+  'our':'我們的','their':'他們的',
+  'i':'我','you':'你','he':'他','she':'她','we':'我們','they':'他們',
+  'me':'我(賓)','him':'他(賓)','us':'我們(賓)','them':'他們(賓)',
+  'not':'不','do':'做','does':'做(三單)','did':'做(過去)',
+  'have':'有','has':'有(三單)','had':'有(過去)',
+  'will':'將','would':'會','can':'能','could':'能(過去)',
+  'should':'應該','may':'可能','must':'必須',
+  'very':'非常','so':'所以','as':'如/當','if':'如果','when':'當',
+  'up':'向上','out':'外面','about':'關於','into':'進入',
+  'after':'之後','before':'之前','some':'一些','any':'任何','all':'所有',
+  'no':'沒有','than':'比','more':'更多','most':'最多','just':'只是',
+  'what':'什麼','who':'誰','where':'哪裡','how':'如何',
+  'why':'為什麼','which':'哪個',
+  'already':'已經','still':'仍然','also':'也','here':'這裡','there':'那裡',
+  'then':'然後','too':'也','only':'只','because':'因為','while':'當...時',
+  'since':'自從','until':'直到','each':'每個','every':'每個',
+  'between':'之間','through':'穿過','without':'沒有','around':'周圍',
+  'during':'在...期間','against':'對抗','within':'在...內',
+  'am':'是(我)','dont':"不",'doesnt':'不(三單)','didnt':'沒有',
+  'wont':'不會','cant':'不能','isnt':'不是','arent':'不是',
+  'wasnt':'不是(過去)','havent':'沒有(完成)','hasnt':'沒有(完成)',
+  'please':'請','let':'讓','keep':'保持','make':'使/做','put':'放',
+  'take':'拿/花','come':'來','go':'去','see':'看','know':'知道',
+  'think':'想','feel':'感覺','want':'想要','need':'需要','try':'嘗試',
+  'help':'幫助','use':'使用','seem':'似乎','show':'展示','tell':'告訴',
+  'ask':'詢問','turn':'轉','move':'移動','say':'說','look':'看',
+  'hear':'聽','run':'跑','walk':'走','sit':'坐','stand':'站',
+  'live':'住/生活','love':'愛','like':'喜歡','eat':'吃','drink':'喝',
+  'sleep':'睡','wake':'醒','stay':'留','leave':'離開','start':'開始',
+  'stop':'停止','begin':'開始','end':'結束','wait':'等','call':'打電話',
+  'meet':'見面','lose':'失去','win':'贏','miss':'想念/錯過','give':'給',
+  'set':'設置','hold':'拿著','carry':'攜帶','bring':'帶來',
+  'buy':'買','sell':'賣','pay':'付錢','read':'讀','write':'寫',
+  'sing':'唱','draw':'畫','teach':'教','rest':'休息',
+  'open':'開','close':'關','clean':'清潔','wash':'洗','cook':'煮',
+  'fix':'修理','play':'玩/打','send':'送','work':'工作/運作',
+  'happy':'快樂的','sad':'傷心的','angry':'生氣的','tired':'疲倦的',
+  'sick':'生病的','well':'健康的','fine':'好的','sure':'確定的',
+  'right':'正確的','wrong':'錯誤的','true':'真的','real':'真實的',
+  'same':'相同的','other':'其他的','another':'另一個','own':'自己的',
+  'young':'年輕的','new':'新的','old':'舊的/老的','big':'大的',
+  'small':'小的','little':'小的','long':'長的','short':'短的',
+  'high':'高的','low':'低的','fast':'快的','slow':'慢的',
+  'hot':'熱的','cold':'冷的','warm':'暖的','cool':'涼的',
+  'hard':'努力/難的','easy':'容易的','late':'晚的','early':'早的',
+  'free':'自由的/免費的','ready':'準備好的','busy':'忙碌的',
+  'closed':'關閉的','open':'開著的','different':'不同的',
+  'last':'最後的','next':'下一個','first':'第一個','second':'第二個',
+  'together':'一起','really':'真的','very':'非常','quite':'相當',
+  'never':'從不','always':'總是','often':'常常','sometimes':'有時',
+  'again':'再次','away':'遠離','back':'回來','outside':'外面',
+  'inside':'裡面','online':'網路上','everyone':'每個人','everything':'所有事',
+  'someone':'某人','something':'某事','anything':'任何事','nothing':'沒有事',
+  'ourselves':'我們自己','yourself':'你自己','himself':'他自己','herself':'她自己',
+  'itself':'它自己','themselves':'他們自己','myself':'我自己',
+  'morning':'早上','afternoon':'下午','evening':'晚上','night':'夜晚',
+  'today':'今天','tomorrow':'明天','yesterday':'昨天','now':'現在',
+  'soon':'很快','once':'曾經/一次','twice':'兩次',
+  'one':'一個','two':'兩個','three':'三個','four':'四個','five':'五個',
+  'six':'六個','seven':'七個','eight':'八個','nine':'九個','ten':'十個',
+  'eleven':'十一','twelve':'十二','hundred':'百','thousand':'千',
+  'many':'許多','much':'很多','few':'少數','several':'幾個','plenty':'很多',
+  'with':'和/用','over':'超過/上方','below':'在...下方','above':'在...上方',
+  'along':'沿著','across':'穿越','behind':'在...後面','beside':'在...旁邊',
+  'under':'在...下面','near':'靠近','past':'過去/經過','toward':'朝向',
+  'upon':'在...上','despite':'儘管','except':'除了','thanks':'謝謝',
+  'wherever':'無論哪裡','whether':'是否','among':'之中','off':'關掉/離開',
+  'might':'可能','instead':'代替',
+  'went':'去(過去)','came':'來(過去)','saw':'看(過去)','ate':'吃(過去)',
+  'sat':'坐(過去)','made':'做(過去)','took':'拿(過去)','wrote':'寫(過去)',
+  'swam':'游(過去)','sang':'唱(過去)','stood':'站(過去)','rode':'騎(過去)',
+  'spoke':'說(過去)','wore':'穿(過去)','felt':'感覺(過去)','gave':'給(過去)',
+  'caught':'抓到(過去)','bought':'買(過去)','told':'告訴(過去)',
+  'fell':'跌倒(過去)','threw':'丟(過去)','built':'建造(過去)',
+  'blew':'吹(過去)','broke':'打破(過去)','flew':'飛(過去)',
+  'spent':'花費(過去)','won':'贏(過去)','lost':'失去(過去)',
+  'drove':'駕駛(過去)','woke':'醒來(過去)','drew':'畫(過去)',
+  'drank':'喝(過去)','held':'拿著(過去)','found':'找到(過去)',
+  'lit':'點燃(過去)','met':'遇見(過去)','grew':'成長(過去)',
+  'sent':'送(過去)','kept':'保持(過去)','got':'得到(過去)',
+  'became':'成為(過去)','said':'說(過去)','bit':'咬(過去)',
+  'knew':'知道(過去)','left':'離開(過去)',
+  'brought':'帶來(過去)','taught':'教(過去)','thought':'想(過去)',
+  'sold':'賣(過去)','paid':'付錢(過去)',
+  'ran':'跑(過去)','heard':'聽(過去)',
+  'slept':'睡(過去)','laid':'放置(過去)',
+  'led':'帶領(過去)','cut':'切(過去)',
+  'hurt':'受傷(過去)','cost':'花費(過去)','beat':'打(過去)',
+  'chose':'選擇(過去)','bore':'承受(過去)',
+  'understood':'理解(過去)','struck':'打擊(過去)',
+  'read':'讀(過去/現在)','put':'放(過去/現在)',
+  'hit':'打(過去/現在)','let':'讓(過去/現在)',
+  'set':'設置(過去/現在)',
+  'known':'知名的','written':'書面的','spoken':'口說的',
+  'broken':'破掉的','gone':'離去的','done':'完成的',
+  'given':'給予的','shown':'展示的',
+  'speak':'說話','solve':'解決','protect':'保護','prefer':'偏好',
+  'attend':'參加','afford':'負擔得起','succeed':'成功','improve':'改善',
+  'communicate':'溝通','explore':'探索','relax':'放鬆','submit':'繳交',
+  'reconsider':'重新考慮','avoid':'避免','bloom':'開花','spread':'散布',
+  'add':'加入','grow':'成長','reach':'到達','join':'加入',
+  'provide':'提供','inspire':'激勵','cause':'造成','receive':'收到',
+  'perform':'表演','decorate':'裝飾','greet':'打招呼','roar':'吼叫',
+  'announce':'宣佈','lean':'靠','wag':'搖擺','kick':'踢',
+  'discuss':'討論','march':'行進','raise':'升起','charge':'收費',
+  'connect':'連結','invest':'投資','express':'表達','struggle':'掙扎',
+  'rush':'趕快/高峰','pump':'抽送','revolve':'繞轉','orbit':'繞軌道',
+  'flow':'流動','hang':'掛','shoot':'射','chase':'追逐',
+  'allow':'允許','trust':'信任','thank':'感謝','touch':'觸碰',
+  'collect':'蒐集','copy':'複製','lift':'舉起','jump':'跳',
+  'assemble':'組裝','consider':'考慮','watch':'觀看',
+  'studying':'學習中','listening':'聆聽中','hiking':'健行中',
+  'swimming':'游泳中','watching':'觀看中','camping':'露營中',
+  'talking':'說話中','submitting':'繳交中','training':'訓練中',
+  'brushing':'刷(牙)中','shopping':'購物中','planning':'計畫中',
+  'sleeping':'睡覺中','working':'工作中','running':'跑步中',
+  'receiving':'收到中',
+  'beautiful':'美麗的','nice':'好的','soft':'柔軟的',
+  'quiet':'安靜的','calm':'平靜的','peaceful':'和平的','sunny':'晴朗的',
+  'spacious':'寬敞的','comfortable':'舒適的','powerful':'有力的',
+  'valuable':'有價值的','precious':'珍貴的','amazing':'令人驚嘆的',
+  'romantic':'浪漫的','inspiring':'激勵的','bustling':'熙攘的',
+  'tough':'艱難的','regular':'規律的','reasonable':'合理的',
+  'balanced':'均衡的','supportive':'支持的','charming':'迷人的',
+  'familiar':'熟悉的','local':'當地的','complete':'完整的',
+  'illegal':'違法的','international':'國際的','advanced':'進階的',
+  'professional':'專業的','excellent':'優秀的','classic':'經典的',
+  'tropical':'熱帶的','classical':'古典的','extra':'額外的',
+  'scheduled':'預定的','perfect':'完美的','equal':'相等的',
+  'fake':'假的','staple':'主食的','contagious':'有傳染性的',
+  'philosophical':'哲學的','runny':'流鼻水的','rare':'稀有的',
+  'juicy':'多汁的','cute':'可愛的','gentle':'溫柔的',
+  'patient':'有耐心的',
+  'quickly':'快速地','quietly':'安靜地','loudly':'大聲地',
+  'brightly':'明亮地','strongly':'強烈地','warmly':'熱情地',
+  'happily':'快樂地','wisely':'明智地','beautifully':'美麗地',
+  'tightly':'緊緊地','slowly':'緩慢地','clearly':'清楚地',
+  'heavily':'大量地','absolutely':'絕對地','correctly':'正確地',
+  'soundly':'酣睡地','deeply':'深深地','directly':'直接地',
+  'carefully':'小心地','worldwide':'全世界地',
+  'people':'人們','children':'孩子們','teeth':'牙齒(複)',
+  'math':'數學','doctor':'醫生','exam':'考試','ocean':'海洋',
+  'storm':'暴風雨','shelf':'架子','temperature':'溫度','opinion':'意見',
+  'chair':'椅子','pizza':'披薩','diet':'飲食','phone':'手機',
+  'marathon':'馬拉松','pen':'筆','mall':'購物中心',
+  'concert':'音樂會','championship':'冠軍賽','classroom':'教室',
+  'speech':'演講','goal':'目標','lottery':'彩券',
+  'deadline':'截止日','project':'計畫案','bank':'銀行','father':'父親',
+  'wedding':'婚禮','kindness':'善意','kingdom':'王國',
+  'groceries':'日用雜貨','truth':'真相','scientist':'科學家',
+  'lady':'女士','sector':'部門','grandparents':'祖父母',
+  'firefighters':'消防員','emotion':'情感','issue':'議題',
+  'parade':'遊行','bottle':'瓶子','shade':'遮蔭','destruction':'毀壞',
+  'fireplace':'壁爐','situation':'情況','forecast':'預報',
+  'police':'警察','thief':'小偷','captain':'隊長','competition':'比賽',
+  'wheat':'小麥','corn':'玉米','occasion':'場合','crib':'嬰兒床',
+  'guard':'衛兵','grammar':'文法','countryside':'鄉間','pillow':'枕頭',
+  'curtain':'窗簾','approach':'方法','message':'訊息','attention':'注意力',
+  'media':'媒體','athlete':'運動員','education':'教育','talent':'才華',
+  'generation':'世代','highway':'公路','growth':'成長',
+  'anniversary':'周年紀念','flag':'國旗','ceremony':'典禮',
+  'jungle':'叢林','vineyard':'葡萄園','website':'網站',
+  'response':'回覆','email':'電子郵件','mayor':'市長',
+  'scenery':'風景','photography':'攝影','option':'選項',
+  'discussion':'討論','climate':'氣候','damage':'損害',
+  'reunion':'重聚','award':'獎項','performance':'表演','role':'角色',
+  'cereal':'穀片','delivery':'外送','location':'地點',
+  'document':'文件','task':'任務','staff':'員工',
+  'birth':'誕生','magician':'魔術師','scarf':'圍巾','portrait':'肖像',
+  'gold':'黃金','sunscreen':'防曬乳','tourist':'觀光客',
+  'attraction':'景點','population':'人口','hammer':'榔頭',
+  'trophy':'獎盃','accident':'意外','landscape':'風景畫',
+  'cave':'山洞','ingredient':'食材','cuisine':'料理',
+  'elders':'長輩','package':'包裹','stage':'舞台',
+  'grandfather':'祖父','waist':'腰','sunset':'日落',
+  'hairstyle':'髮型','products':'產品(複)',
+  'gas':'瓦斯/汽油','blood':'血液','throughout':'遍及','miles':'英里(複)',
+  'twist':'轉折','tunnel':'隧道','guests':'客人(複)','ham':'火腿',
+  'cheese':'乳酪','customer':'顧客','roast':'烤','workweek':'工作週',
+  'cart':'推車','daily':'每日的','sweat':'汗水','female':'女性的',
+  'flour':'麵粉','technology':'科技','gasoline':'汽油','textbook':'課本',
+  'view':'景色','crowd':'人群','carpet':'地毯','elephant':'大象',
+  'victory':'勝利','success':'成功','downtown':'市中心',
+  'amount':'數量','zero':'零','morning':'早上',
+  'hello':'你好','hole':'洞','omelet':'蛋捲',
+  'salad':'沙拉','guidance':'指導','rabbit':'兔子',
+  'field':'田野','cartoon':'卡通','kimchi':'泡菜','pumpkin':'南瓜',
+};
+
+function _getWordZh(wordStr) {
+  const lower = wordStr.replace(/[\u2018\u2019\u02BC]/g,"'").toLowerCase().replace(/[^a-z']/g,'');
+  const map = _getVocabMap();
+  const look = w => map.has(w) ? extractMeaning(map.get(w).zh) : (_COMMON_ZH[w] || '');
+
+  let r = look(lower);
+  if (r) return r;
+  const plain = lower.replace(/'/g,'');
+  r = look(plain);
+  if (r) return r;
+
+  const w = plain;
+  const candidates = [];
+  if (w.endsWith('ies'))  candidates.push(w.slice(0,-3)+'y');
+  if (w.endsWith('ied'))  candidates.push(w.slice(0,-3)+'y');
+  if (w.endsWith('ves'))  candidates.push(w.slice(0,-3)+'f', w.slice(0,-3)+'fe');
+  if (w.endsWith('ing'))  { candidates.push(w.slice(0,-3)); candidates.push(w.slice(0,-3)+'e'); }
+  if (w.endsWith('ed'))   { candidates.push(w.slice(0,-2)); candidates.push(w.slice(0,-1)); candidates.push(w.slice(0,-2)+'e'); }
+  if (w.endsWith('er'))   { candidates.push(w.slice(0,-2)); candidates.push(w.slice(0,-2)+'e'); }
+  if (w.endsWith('est'))  { candidates.push(w.slice(0,-3)); candidates.push(w.slice(0,-3)+'e'); }
+  if (w.endsWith('es'))   candidates.push(w.slice(0,-2), w.slice(0,-1));
+  if (w.endsWith('s') && !w.endsWith('ss')) candidates.push(w.slice(0,-1));
+  if (w.endsWith('ing') && w.length > 5 && w[w.length-4] === w[w.length-5]) candidates.push(w.slice(0,-4));
+  if (w.endsWith('ed')  && w.length > 4 && w[w.length-3] === w[w.length-4]) candidates.push(w.slice(0,-3));
+
+  for (const c of candidates) {
+    if (!c) continue;
+    r = look(c);
+    if (r) return r;
+  }
+  return '';
+}
+
+function _parseSentence(ex) {
+  ex = ex.replace(/[\u2018\u2019\u02BC]/g, "'");
+  const tokens = [];
+  const re = /([A-Za-z][A-Za-z']*)([^A-Za-z']*)/g;
+  let m;
+  while ((m = re.exec(ex)) !== null) {
+    const word   = m[1];
+    const after  = m[2];
+    const punct  = after.trim().replace(/\s/g,'');
+    const target = word.toLowerCase().replace(/[^a-z]/g,'');
+    if (!target) continue;
+    tokens.push({ word, target, punct: punct||'', zh: _getWordZh(word), correct: false, hintCount: 0 });
+  }
+  return tokens;
+}
+
+function renderSentence(body) {
+  sentWords = modalWords.filter(w => w.ex && w.exz);
+  sentIdx   = 0;
+  sentScore = 0;
+  sentDone  = false;
+  if (!sentWords.length) {
+    body.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);font-weight:700">此天沒有例句資料</div>`;
+    return;
+  }
+  _renderSentCard(body);
+}
+
+function _renderSentCard(body) {
+  if (sentIdx >= sentWords.length) { _renderSentResult(body); return; }
+  const w = sentWords[sentIdx];
+  _sentTokens = _parseSentence(w.ex);
+  _sentFocus  = 0;
+  sentDone    = false;
+
+  let tokensHTML = '';
+  _sentTokens.forEach((t, ti) => {
+    let boxesHTML = '';
+    let bi = 0;
+    for (const ch of t.word) {
+      if (ch === "'") {
+        boxesHTML += `<span class="sent-apostrophe">'</span>`;
+      } else if (/[a-zA-Z]/.test(ch)) {
+        boxesHTML += `<input class="letter-box sent-lb" id="slb-${ti}-${bi}" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" data-ti="${ti}" data-bi="${bi}">`;
+        bi++;
+      }
+    }
+    const hintHTML = `<div class="sent-token-hint" id="shint-${ti}">${t.zh || ''}</div>`;
+    const punctHTML = t.punct ? `<span class="sent-token-punct">${t.punct}</span>` : '';
+    tokensHTML += `<div class="sent-token" id="stok-${ti}"><div class="sent-token-boxes">${boxesHTML}</div>${hintHTML}</div>${punctHTML}`;
+  });
+
+  body.innerHTML = `
+    <div class="sent-section">
+      <div class="practice-header">
+        <h3>句子翻譯</h3>
+        <span class="practice-score">${sentIdx + 1} / ${sentWords.length}</span>
+      </div>
+      <div class="sent-card">
+        <div class="sent-zh">${w.exz}</div>
+        <div class="sent-words-row" id="sent-words-row">${tokensHTML}</div>
+        <div class="sent-feedback-wrap"><span class="sent-feedback info" id="sent-feedback">輸入每個單字，按 Enter 確認</span></div>
+      </div>
+      <div class="typing-nav">
+        <button class="t-btn t-btn-skip" onclick="nextSentence()">跳過 →</button>
+      </div>
+    </div>`;
+
+  _initSentBoxes();
+  _focusSentToken(0);
+}
+
+function _initSentBoxes() {
+  document.querySelectorAll('.sent-lb').forEach(box => {
+    const ti = +box.dataset.ti;
+    const bi = +box.dataset.bi;
+
+    box.addEventListener('keydown', e => {
+      const t = _sentTokens[ti];
+      if (sentDone) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowRight') { e.preventDefault(); nextSentence(); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); prevSentence(); }
+        return;
+      }
+      if (e.key === 'Enter') { e.preventDefault(); _checkAllSentTokens(); return; }
+      if (t.correct) {
+        if (e.key === 'ArrowRight' || e.key === 'Tab') { e.preventDefault(); _focusSentToken(_sentFocus + 1); }
+        else if (e.key === 'ArrowLeft') { e.preventDefault(); _focusSentToken(_sentFocus - 1); }
+        else if (e.key === ' ') { e.preventDefault(); _focusSentToken(_sentFocus + 1); }
+        return;
+      }
+      if (e.key === ' ')     { e.preventDefault(); _focusSentToken(_sentFocus + 1); return; }
+      if (e.key === 'Tab')   { e.preventDefault(); _focusSentToken(e.shiftKey ? _sentFocus - 1 : _sentFocus + 1); return; }
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (box.value) { box.value = ''; }
+        else if (bi > t.hintCount) { const p = document.getElementById(`slb-${ti}-${bi-1}`); if (p) { p.value=''; p.focus(); } }
+        return;
+      }
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        if (bi > t.hintCount) document.getElementById(`slb-${ti}-${bi-1}`)?.focus();
+        else _focusSentToken(_sentFocus - 1);
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        if (bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+        else _focusSentToken(_sentFocus + 1);
+        return;
+      }
+    });
+
+    let _comp = false;
+    box.addEventListener('compositionstart', () => { _comp = true; });
+    box.addEventListener('compositionend', () => {
+      _comp = false;
+      const t = _sentTokens[ti];
+      if (t.correct) return;
+      let val = box.value.replace(/[^a-zA-Z]/g,'').slice(-1).toLowerCase();
+      if (ti === 0 && bi === 0 && val) val = val.toUpperCase();
+      box.value = val;
+      if (val && bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+    });
+    box.addEventListener('input', () => {
+      if (_comp) return;
+      const t = _sentTokens[ti];
+      if (t.correct) return;
+      let val = box.value.replace(/[^a-zA-Z]/g,'').slice(-1).toLowerCase();
+      if (ti === 0 && bi === 0 && val) val = val.toUpperCase();
+      box.value = val;
+      if (val && bi < t.target.length - 1) document.getElementById(`slb-${ti}-${bi+1}`)?.focus();
+    });
+  });
+}
+
+function _focusSentToken(idx) {
+  const n = _sentTokens.length;
+  idx = Math.max(0, Math.min(n - 1, idx));
+  _sentFocus = idx;
+  document.querySelectorAll('.sent-token').forEach((el, i) => el.classList.toggle('word-active', i === idx));
+  const t = _sentTokens[idx];
+  document.getElementById(`slb-${idx}-${t.hintCount}`)?.focus();
+}
+
+function _checkAllSentTokens() {
+  const fb = document.getElementById('sent-feedback');
+  let wrongCount = 0;
+  let firstWrong = -1;
+
+  _sentTokens.forEach((t, ti) => {
+    if (t.correct) return;
+    const boxes = [...document.querySelectorAll(`.sent-lb[data-ti="${ti}"]`)];
+    const answer = boxes.map(b => b.value).join('').toLowerCase();
+
+    if (answer === t.target) {
+      t.correct = true;
+      boxes.forEach(b => { b.classList.remove('revealed'); b.classList.add('correct'); b.disabled = true; });
+      document.getElementById(`stok-${ti}`)?.classList.add('word-done');
+    } else {
+      wrongCount++;
+      if (firstWrong === -1) firstWrong = ti;
+      if (answer.length > 0) {
+        t.hintCount = Math.min(t.hintCount + 1, t.target.length - 1);
+        for (let i = 0; i < t.hintCount; i++) {
+          boxes[i].value = (ti === 0 && i === 0) ? t.target[i].toUpperCase() : t.target[i];
+          boxes[i].classList.add('revealed');
+          boxes[i].disabled = true;
+        }
+        for (let i = t.hintCount; i < boxes.length; i++) {
+          boxes[i].value = '';
+          boxes[i].classList.remove('correct','wrong','revealed');
+          boxes[i].disabled = false;
+        }
+      }
+    }
+  });
+
+  if (wrongCount === 0) {
+    sentDone = true;
+    sentScore++;
+    launchConfetti();
+    fb.className = 'sent-feedback ok';
+    fb.textContent = '✓ 整句完成！按 Enter / 空白鍵 進入下一句';
+    const panel = document.createElement('div');
+    panel.className = 'sent-done-panel';
+    panel.innerHTML = `<div class="sent-done-msg">🎉 完成！</div><div class="sent-done-sub">第 ${sentIdx + 1} / ${sentWords.length} 句</div>`;
+    document.getElementById('sent-words-row')?.after(panel);
+  } else {
+    fb.className = 'sent-feedback info';
+    const cheers = ['加油！', '繼續努力！', 'Keep going!', 'You got this!', 'Almost there!'];
+    fb.textContent = `${cheers[Math.floor(Math.random()*cheers.length)]} 還有 ${wrongCount} 個字，你可以的！`;
+    _focusSentToken(firstWrong);
+  }
+}
+
+function nextSentence() {
+  sentIdx++;
+  const body = document.getElementById('modal-body');
+  if (body) _renderSentCard(body);
+}
+
+function prevSentence() {
+  if (sentIdx > 0) { sentIdx--; const body = document.getElementById('modal-body'); if (body) _renderSentCard(body); }
+}
+
+function retrySentence() {
+  sentIdx = 0; sentScore = 0;
+  const body = document.getElementById('modal-body');
+  if (body) _renderSentCard(body);
+}
+
+function _renderSentResult(body) {
+  body.innerHTML = `
+    <div class="sent-section">
+      <div class="fc-result">
+        <div class="fc-result-emoji">🏆</div>
+        <div class="fc-result-title">句子翻譯完成！</div>
+        <div class="fc-result-sub">完成 ${sentWords.length} 個句子</div>
+        <button class="result-btn" onclick="retrySentence()">重新練習</button>
+        <button class="result-btn secondary" onclick="switchTab('type')">去做中翻英</button>
+      </div>
+    </div>`;
+}
+
+// ── AUDIO ENGINE ─────────────────────────────────────────────
+let _ttsAudio = null;
+
+function speakWord(word) {
+  if (!word) return;
+  if (_ttsAudio) { _ttsAudio.onended = null; _ttsAudio.onerror = null; _ttsAudio.pause(); }
+  const audio = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=' + encodeURIComponent(word));
+  _ttsAudio = audio;
+  audio.onerror = () => _wsSpeakWord(word);
+  audio.play().catch(() => _wsSpeakWord(word));
+}
+function _wsSpeakWord(word) {
+  const u = new SpeechSynthesisUtterance(word);
+  u.lang = 'en-US'; u.rate = 0.85;
+  window.speechSynthesis.cancel();
+  window.speechSynthesis.speak(u);
 }
 
 function flipFC() {
@@ -829,6 +1383,11 @@ function renderTypCard() {
   const pos = extractPOS(w.zh);
   const meaning = extractMeaning(w.zh);
 
+  let boxesHTML = '';
+  for (let i = 0; i < w.w.length; i++) {
+    boxesHTML += `<input class="letter-box" id="typ-lb-${i}" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" inputmode="text" data-idx="${i}">`;
+  }
+
   sec.innerHTML = `
     <div class="practice-header">
       <h3>中翻英練習</h3>
@@ -838,8 +1397,7 @@ function renderTypCard() {
       <div class="typing-progress">${typIdx + 1} / ${typWords.length}</div>
       <div class="typing-zh">${meaning}</div>
       ${pos ? `<div class="typing-pos">詞性：${pos}</div>` : ''}
-      <div class="typing-hint">請輸入英文單字</div>
-      <input class="typing-input" id="typ-input" type="text" placeholder="輸入英文..." autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+      <div class="letter-boxes">${boxesHTML}</div>
       <div class="typing-feedback" id="typ-feedback"></div>
     </div>
     <div class="typing-nav">
@@ -848,42 +1406,68 @@ function renderTypCard() {
     </div>
   `;
 
-  const inp = document.getElementById('typ-input');
-  if (inp) {
-    inp.focus();
-    inp.addEventListener('keydown', e => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        if (!typAnswered) submitTyping();
-        else nextTyping();
-      }
-    });
-  }
+  _initTypBoxes(w.w);
+  document.getElementById('typ-lb-0')?.focus();
   typAnswered = false;
+}
+
+function _initTypBoxes(word) {
+  document.querySelectorAll('[id^="typ-lb-"]').forEach(box => {
+    const idx = +box.dataset.idx;
+    box.addEventListener('keydown', e => {
+      if (typAnswered) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); nextTyping(); }
+        return;
+      }
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); submitTyping(); return; }
+      if (e.key === 'Backspace') {
+        e.preventDefault();
+        if (box.value) { box.value = ''; }
+        else if (idx > 0) { const p = document.getElementById(`typ-lb-${idx-1}`); if (p) { p.value = ''; p.focus(); } }
+        return;
+      }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); document.getElementById(`typ-lb-${idx-1}`)?.focus(); return; }
+      if (e.key === 'ArrowRight') { e.preventDefault(); document.getElementById(`typ-lb-${idx+1}`)?.focus(); return; }
+    });
+    let _comp = false;
+    box.addEventListener('compositionstart', () => { _comp = true; });
+    box.addEventListener('compositionend', () => {
+      _comp = false;
+      box.value = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
+      if (box.value && idx < word.length - 1) document.getElementById(`typ-lb-${idx+1}`)?.focus();
+    });
+    box.addEventListener('input', () => {
+      if (_comp) return;
+      box.value = box.value.replace(/[^a-zA-Z]/g, '').slice(-1).toLowerCase();
+      if (box.value && idx < word.length - 1) document.getElementById(`typ-lb-${idx+1}`)?.focus();
+    });
+  });
 }
 
 function submitTyping() {
   if (typAnswered) { nextTyping(); return; }
-  const inp = document.getElementById('typ-input');
-  if (!inp) return;
-  const answer = inp.value.trim().toLowerCase();
-  const correct = typWords[typIdx].w.toLowerCase();
+  const word = typWords[typIdx].w.toLowerCase();
+  const boxes = [...document.querySelectorAll('[id^="typ-lb-"]')];
+  const answer = boxes.map(b => b.value).join('');
   const feedback = document.getElementById('typ-feedback');
   const submitBtn = document.getElementById('typ-submit');
 
   typAnswered = true;
 
-  if (answer === correct) {
-    inp.className = 'typing-input correct';
+  if (answer === word) {
+    boxes.forEach(b => { b.classList.add('correct'); b.disabled = true; });
     feedback.className = 'typing-feedback ok';
     feedback.textContent = '✓ 正確！';
     typScore++;
     knownWords.add(typWords[typIdx].w);
     saveKnown([...knownWords]);
   } else {
-    inp.className = 'typing-input wrong';
+    boxes.forEach((b, i) => {
+      b.classList.add(b.value === word[i] ? 'correct' : 'wrong');
+      b.disabled = true;
+    });
     feedback.className = 'typing-feedback err';
-    feedback.innerHTML = `✗ 正確答案：<strong>${correct}</strong>`;
+    feedback.innerHTML = `✗ 正確答案：<strong>${word}</strong>`;
   }
 
   if (submitBtn) submitBtn.textContent = '下一題 →';
@@ -891,14 +1475,13 @@ function submitTyping() {
 }
 
 function skipTyping() {
+  if (typAnswered) { nextTyping(); return; }
   typAnswered = true;
-  const inp = document.getElementById('typ-input');
-  if (inp) inp.className = 'typing-input wrong';
+  const word = typWords[typIdx].w.toLowerCase();
+  const boxes = [...document.querySelectorAll('[id^="typ-lb-"]')];
+  boxes.forEach((b, i) => { b.value = word[i]; b.classList.add('revealed'); b.disabled = true; });
   const feedback = document.getElementById('typ-feedback');
-  if (feedback) {
-    feedback.className = 'typing-feedback err';
-    feedback.innerHTML = `答案：<strong>${typWords[typIdx].w}</strong>`;
-  }
+  if (feedback) { feedback.className = 'typing-feedback err'; feedback.innerHTML = `答案：<strong>${word}</strong>`; }
   const submitBtn = document.getElementById('typ-submit');
   if (submitBtn) submitBtn.textContent = '下一題 →';
   document.getElementById('typ-score').textContent = `得分: ${typScore} / ${typIdx + 1}`;
@@ -1077,6 +1660,84 @@ function markDayDone() {
   saveProgress(progress);
   updateProgress();
 }
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function launchConfetti() {
+  const colors = ['#f97316','#06b6d4','#a855f7','#22c55e','#f43f5e','#eab308','#3b82f6','#ec4899'];
+  const ox = window.innerWidth  / 2;
+  const oy = window.innerHeight / 2;
+  const GRAVITY = 0.45;
+  const DRAG    = 0.985;
+
+  for (let i = 0; i < 180; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    const w = 4 + Math.random() * 14;
+    const h = 4 + Math.random() * 14;
+    el.style.cssText = `
+      width:${w}px;height:${h}px;
+      left:${ox}px;top:${oy}px;
+      background:${colors[i % colors.length]};
+      border-radius:${Math.random() > 0.45 ? '50%' : '2px'};
+    `;
+    document.body.appendChild(el);
+
+    // shoot in a full 360° fan but weighted upward
+    const angle = (Math.random() * 260 - 220) * (Math.PI / 180); // -220° ~ 40°
+    const speed = 10 + Math.random() * 14;
+    let vx = Math.cos(angle) * speed;
+    let vy = Math.sin(angle) * speed;
+    let x = ox, y = oy, rot = Math.random() * 360;
+    const rspeed = (Math.random() - 0.5) * 14;
+    const delay  = Math.random() * 120;
+
+    setTimeout(() => {
+      (function tick() {
+        vx *= DRAG; vy = vy * DRAG + GRAVITY;
+        x += vx; y += vy; rot += rspeed;
+        el.style.transform = `translate(${x - ox}px,${y - oy}px) rotate(${rot}deg)`;
+        if (y < window.innerHeight + 40) {
+          requestAnimationFrame(tick);
+        } else {
+          el.remove();
+        }
+      })();
+    }, delay);
+  }
+}
+
+
+// ============================================================
+// KEYBOARD SHORTCUTS（閃卡）
+// ============================================================
+document.addEventListener('keydown', function(e) {
+  if (!document.getElementById('modal-overlay').classList.contains('open')) return;
+
+  // ── 閃卡 ──
+  if (currentTab === 'flash') {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    switch (e.key) {
+      case 'ArrowRight': e.preventDefault(); fcNav(1);  break;
+      case 'ArrowLeft':  e.preventDefault(); fcNav(-1); break;
+      case 'ArrowDown':  e.preventDefault(); if (fcWords[fcIdx]) speakWord(fcWords[fcIdx].w); break;
+      case ' ':
+      case 'Enter':      e.preventDefault(); flipFC();  break;
+    }
+    return;
+  }
+
+  // ── 中翻英：答題後 Enter / 空白鍵下一題 ──
+  if (currentTab === 'type' && typAnswered) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      // 若事件來自格子本身，代表這次 Enter 是用來確認答案的，不跳題
+      if (e.target.id && e.target.id.startsWith('typ-lb-')) return;
+      e.preventDefault();
+      nextTyping();
+    }
+  }
+});
 
 // ============================================================
 // INIT
