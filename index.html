@@ -1558,13 +1558,16 @@ function renderMCQCard() {
 
   const options = [w.w, ...distractors].sort(() => Math.random() - 0.5);
 
-  // Determine question type: fill-blank if word appears in example, else meaning
-  const hasFillBlank = w.ex && w.ex.toLowerCase().includes(w.w.toLowerCase());
+  // Determine question type: fill-blank if exact word (with word boundaries) appears in example, else meaning
   let questionHtml = '';
-  if (hasFillBlank) {
+  if (w.ex) {
     const regex = new RegExp('\\b' + w.w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi');
     const blankedEx = w.ex.replace(regex, '<span class="mcq-blank"></span>');
-    questionHtml = blankedEx;
+    if (blankedEx !== w.ex) {
+      questionHtml = blankedEx;
+    } else {
+      questionHtml = `下列哪個單字的意思是「<strong>${meaning}</strong>」？`;
+    }
   } else {
     questionHtml = `下列哪個單字的意思是「<strong>${meaning}</strong>」？`;
   }
